@@ -16,10 +16,6 @@ type apiKey struct {
 }
 
 func main() {
-	// path, err := os.Getwd()
-	// if err != nil {
-	// }
-	// fmt.Println(path)
 
 	jsonFile, err := os.Open("cmd/resources/api-key.json")
 	if err != nil {
