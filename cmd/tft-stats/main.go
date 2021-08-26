@@ -1,13 +1,40 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
+type apiKey struct {
+	KeyType string `json:"key_type"`
+	Key     string `json:"key"`
+}
+
 func main() {
-	// Hello world, the web server
+	// path, err := os.Getwd()
+	// if err != nil {
+	// }
+	// fmt.Println(path)
+
+	jsonFile, err := os.Open("cmd/resources/api-key.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var key apiKey
+	json.Unmarshal([]byte(byteValue), &key)
+
+	fmt.Println(key)
+	fmt.Println("hello")
 
 	helloHandler := func(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w, "Hello, world!\n")
