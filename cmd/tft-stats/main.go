@@ -39,6 +39,7 @@ func main() {
 	}
 	defer resp.Body.Close()
 	fmt.Println(resp)
+	fmt.Println("hello")
 	if resp.StatusCode == http.StatusOK {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
