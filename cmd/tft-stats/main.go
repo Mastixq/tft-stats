@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,10 +15,6 @@ type apiKey struct {
 }
 
 func main() {
-	// path, err := os.Getwd()
-	// if err != nil {
-	// }
-	// fmt.Println(path)
 
 	jsonFile, err := os.Open("cmd/resources/api-key.json")
 	if err != nil {
@@ -34,13 +29,22 @@ func main() {
 	json.Unmarshal([]byte(byteValue), &key)
 
 	fmt.Println(key)
-	fmt.Println("hello")
 
-	helloHandler := func(w http.ResponseWriter, req *http.Request) {
-		io.WriteString(w, "Hello, world!\n")
+	var client http.Client
+	request_string := fmt.Sprintf("https://eun1.api.riotgames.com/tft/league/v1/challenger?api_key=%s", key.Key)
+	fmt.Println(request_string)
+	resp, err := client.Get(request_string)
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	http.HandleFunc("/hello", helloHandler)
-	log.Println("Listing for requests at http://localhost:8000/hello")
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	defer resp.Body.Close()
+	fmt.Println(resp)
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		bodyString := string(bodyBytes)
+		fmt.Println(bodyString)
+	}
 }
